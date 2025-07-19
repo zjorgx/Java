@@ -28,4 +28,66 @@ public class Prestamo {
         //Metodos
         
     }
+private static final String ARCHIVO = "Prestamos.txt";
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+    
+    private int contarLineas(String filtro, int tipoConsulta, LocalDateTime desde, LocalDateTime hasta) throws IOException {
+        int contador = 0;
+        BufferedReader br = new BufferedReader(new FileReader(ARCHIVO));
+        String linea;
+        while ((linea = br.readLine()) != null) {
+            boolean cumple = false;
+
+            if (tipoConsulta == 1 && linea.contains("Estudiante: " + filtro)) {
+                cumple = true;
+            } else if (tipoConsulta == 2) {
+                String fechaTexto = linea.split("Fecha Préstamo: ")[1];
+                LocalDateTime fecha = LocalDateTime.parse(fechaTexto, FORMATTER);
+                if ((fecha.isEqual(desde) || fecha.isAfter(desde)) &&
+                    (fecha.isEqual(hasta) || fecha.isBefore(hasta))) {
+                    cumple = true;
+                }
+            } else if (tipoConsulta == 3 && linea.contains("ISBN: " + filtro)) {
+                cumple = true;
+            }
+
+            if (cumple) contador++;
+        }
+        br.close();
+        return contador;
+    }
+
+  //Consultas
+    public String[] consultar(int tipoConsulta, String filtro, LocalDateTime desde, LocalDateTime hasta) throws IOException {
+        int total = contarLineas(filtro, tipoConsulta, desde, hasta);
+        String[] resultados = new String[total];
+        int indice = 0;
+
+        BufferedReader br = new BufferedReader(new FileReader(ARCHIVO));
+        String linea;
+        while ((linea = br.readLine()) != null) {
+            boolean cumple = false;
+
+            if (tipoConsulta == 1 && linea.contains("Estudiante: " + filtro)) {
+                cumple = true;
+            } else if (tipoConsulta == 2) {
+                String fechaTexto = linea.split("Fecha Préstamo: ")[1];
+                LocalDateTime fecha = LocalDateTime.parse(fechaTexto, FORMATTER);
+                if ((fecha.isEqual(desde) || fecha.isAfter(desde)) &&
+                    (fecha.isEqual(hasta) || fecha.isBefore(hasta))) {
+                    cumple = true;
+                }
+            } else if (tipoConsulta == 3 && linea.contains("ISBN: " + filtro)) {
+                cumple = true;
+            }
+
+            if (cumple) {
+                resultados[indice] = linea;
+                indice++;
+            }
+        }
+        br.close();
+        return resultados;
+    }
 }
