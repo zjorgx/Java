@@ -104,7 +104,7 @@ public class Main {
                     }
                     break;
                 case 6:
-                    String lista = "📚 Libros Registrados:\n";
+                    String lista = "Libros Registrados:\n";
                     for (int i = 0; i < contador; i++) {
                         lista += (i + 1) + ". " + libros[i].mostrarInformacion() + "\n";
                     }
@@ -112,7 +112,7 @@ public class Main {
                     break;
                 case 7:
                     String estadoFiltro = JOptionPane.showInputDialog("Ingrese estado a filtrar (Disponible o Prestado):");
-                    String filtrados = "📘 Libros en estado: " + estadoFiltro + "\n";
+                    String filtrados = " Libros en estado: " + estadoFiltro + "\n";
                     for (int i = 0; i < contador; i++) {
                         if (libros[i].getEstado().equalsIgnoreCase(estadoFiltro)) {
                             filtrados += "- " + libros[i].getTitulo() + "\n";
@@ -129,8 +129,42 @@ public class Main {
     }
 
     public static void menuPrestamos() {
-        JOptionPane.showMessageDialog(null, "Funcionalidad en desarrollo...");
-    }
+        int opcion;
+        do {
+            String menu = "----- GESTION DE PRESTAMOS -----\n"
+                       + "1. Registrar prestamo\n"
+                       + "2. Registrar devolución\n"
+                       + "3. Ver libros prestados por estudiante\n"
+                       + "4. Ver prestamos por rango de fechas\n"
+                       + "5. Buscar prestamo por ISBN \n"
+                        + "6. Volver al menú principal\n"
+                    + "Seleccione una opción:";
+        opcion = Integer.parseInt(JOptionPane.showInputDialog(menu));
+
+        switch (opcion) {
+            case 1:
+                registrarPrestamo();
+                break;
+            case 2:
+                registrarDevolucion();
+                break;
+            case 3:
+                consultarPorEstudiante();
+                break;
+            case 4:
+                consultarPorRangoDeFechas();;
+                break;
+            case 5:
+                consultarPorISBN();
+                break;
+            case 6:
+                JOptionPane.showMessageDialog(null, "Volviendo al menú principal, por favor espere...");
+                break;
+            default:
+                JOptionPane.showMessageDialog(null, "Opción inválida.");
+        }
+    } while (opcion != 6);
+}
 
     public static void menuReportes() {
         int opcion;
@@ -197,5 +231,3 @@ public class Main {
             }
         }
         return false;
-    }
-}
