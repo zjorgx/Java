@@ -1,0 +1,31 @@
+package biblioteca;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class Prestamo {
+
+    public static void main(String[] args) { 
+        String isbn = "9781234567890";
+        String titulo = "Java Básico";
+        String estudiante = "Juan Pérez";
+        
+        LocalDateTime ahora = LocalDateTime.now();
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        String fechaPrestamo = ahora.format(formato);
+      
+        String registro = String.format("ISBN: %s; Título: %s; Estudiante: %s; Fecha Préstamo: %s",
+                isbn, titulo, estudiante, fechaPrestamo);
+
+        try (FileWriter writer = new FileWriter("Prestamos.txt", true)) { 
+            writer.write(registro + "\n");
+            System.out.println("Préstamo registrado exitosamente.");
+        } catch (IOException e) {
+            System.out.println("Error al guardar el préstamo: " + e.getMessage());
+        }
+        //Metodos
+        
+    }
+}
