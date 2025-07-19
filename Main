@@ -1,1 +1,201 @@
+package biblioteca;
 
+import javax.swing.JOptionPane;
+
+public class Main {
+    static Libro[] libros = new Libro[100];
+    static int contador = 0;
+    static Libro[] librosEliminados = new Libro[100];
+    static int contadorEliminados = 0;
+
+    public static void main(String[] args) {
+        int opcionPrincipal;
+        do {
+            String menu = "----- MENÚ PRINCIPAL -----\n"
+                        + "1. Gestión de Libros\n"
+                        + "2. Gestión de Préstamos\n"
+                        + "3. Reportes\n"
+                        + "4. Salir\n"
+                        + "Seleccione una opción:";
+            opcionPrincipal = Integer.parseInt(JOptionPane.showInputDialog(menu));
+
+            switch (opcionPrincipal) {
+                case 1:
+                    menuLibros();
+                    break;
+                case 2:
+                    menuPrestamos();
+                    break;
+                case 3:
+                    menuReportes();
+                    break;
+                case 4:
+                    JOptionPane.showMessageDialog(null, "¡Gracias por su visita!");
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(null, "Opción inválida.");
+            }
+        } while (opcionPrincipal != 4);
+    }
+
+    public static void menuLibros() {
+        int opcion;
+        do {
+            String menu = "----- GESTIÓN DE LIBROS -----\n"
+                        + "1. Agregar libro\n"
+                        + "2. Consultar libro por ISBN\n"
+                        + "3. Consultar libro por Título\n"
+                        + "4. Eliminar libro\n"
+                        + "5. Cambiar estado (Prestado/Disponible)\n"
+                        + "6. Ver todos los libros\n"
+                        + "7. Ver libros por estado\n"
+                        + "8. Volver al menú principal\n"
+                        + "Seleccione una opción:";
+            opcion = Integer.parseInt(JOptionPane.showInputDialog(menu));
+
+            switch (opcion) {
+                case 1:
+                    String isbn = JOptionPane.showInputDialog("Ingrese ISBN (13 dígitos, debe iniciar con 978 o 979):");
+                    if (!isbn.startsWith("978") && !isbn.startsWith("979") || isbn.length() != 13) {
+                        JOptionPane.showMessageDialog(null, "ISBN inválido.");
+                        break;
+                    }
+                    String titulo = JOptionPane.showInputDialog("Ingrese el título del libro:");
+                    String autor = JOptionPane.showInputDialog("Ingrese el autor del libro:");
+                    libros[contador++] = new Libro(isbn, titulo, autor);
+                    JOptionPane.showMessageDialog(null, "Libro agregado correctamente.");
+                    break;
+                case 2:
+                    String isbnBuscar = JOptionPane.showInputDialog("Ingrese ISBN:");
+                    Libro libroIsbn = buscarLibro(isbnBuscar);
+                    if (libroIsbn != null) {
+                        JOptionPane.showMessageDialog(null, libroIsbn.mostrarInformacion());
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Libro no encontrado.");
+                    }
+                    break;
+                case 3:
+                    String tituloBuscar = JOptionPane.showInputDialog("Ingrese Título:");
+                    Libro libroTitulo = buscarLibroPorTitulo(tituloBuscar);
+                    if (libroTitulo != null) {
+                        JOptionPane.showMessageDialog(null, libroTitulo.mostrarInformacion());
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Libro no encontrado.");
+                    } 
+                    break;
+                case 4:
+                    String isbnEliminar = JOptionPane.showInputDialog("Ingrese ISBN del libro a eliminar:");
+                    boolean eliminado = eliminarLibro(isbnEliminar);
+                    if (eliminado) {
+                        JOptionPane.showMessageDialog(null, "Libro eliminado correctamente.");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Libro no encontrado.");
+                    }
+                    break;
+                case 5:
+                    String isbnEstado = JOptionPane.showInputDialog("Ingrese ISBN:");
+                    Libro libroEstado = buscarLibro(isbnEstado);
+                    if (libroEstado != null) {
+                        String nuevoEstado = JOptionPane.showInputDialog("Ingrese nuevo estado (Disponible o Prestado):");
+                        libroEstado.setEstado(nuevoEstado);
+                        JOptionPane.showMessageDialog(null, "Estado actualizado.");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Libro no encontrado.");
+                    }
+                    break;
+                case 6:
+                    String lista = "📚 Libros Registrados:\n";
+                    for (int i = 0; i < contador; i++) {
+                        lista += (i + 1) + ". " + libros[i].mostrarInformacion() + "\n";
+                    }
+                    JOptionPane.showMessageDialog(null, lista);
+                    break;
+                case 7:
+                    String estadoFiltro = JOptionPane.showInputDialog("Ingrese estado a filtrar (Disponible o Prestado):");
+                    String filtrados = "📘 Libros en estado: " + estadoFiltro + "\n";
+                    for (int i = 0; i < contador; i++) {
+                        if (libros[i].getEstado().equalsIgnoreCase(estadoFiltro)) {
+                            filtrados += "- " + libros[i].getTitulo() + "\n";
+                        }
+                    }
+                    JOptionPane.showMessageDialog(null, filtrados);
+                    break;
+                case 8:
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(null, "Opción inválida.");
+            }
+        } while (opcion != 8);
+    }
+
+    public static void menuPrestamos() {
+        JOptionPane.showMessageDialog(null, "Funcionalidad en desarrollo...");
+    }
+
+    public static void menuReportes() {
+        int opcion;
+        do {
+            String menu = "----- REPORTES -----\n"
+                        + "1. Total de libros registrados\n"
+                        + "2. Libros disponibles vs prestados\n"
+                        + "3. Ver fecha y hora actual\n"
+                        + "4. Volver al menú principal\n"
+                        + "Seleccione una opción:";
+            opcion = Integer.parseInt(JOptionPane.showInputDialog(menu));
+
+            switch (opcion) {
+                case 1:
+                    JOptionPane.showMessageDialog(null, "Total de libros: " + contador);
+                    break;
+                case 2:
+                    int disponibles = 0, prestados = 0;
+                    for (int i = 0; i < contador; i++) {
+                        if (libros[i].getEstado().equalsIgnoreCase("Disponible")) disponibles++;
+                        else if (libros[i].getEstado().equalsIgnoreCase("Prestado")) prestados++;
+                    }
+                    JOptionPane.showMessageDialog(null, "Disponibles: " + disponibles + " | Prestados: " + prestados);
+                    break;
+                case 3:
+                    String fechaHora = Utilidades.obtenerFechaYHoraActual();
+                    JOptionPane.showMessageDialog(null, "Fecha y hora actual: " + fechaHora);
+                    break;
+                case 4:
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(null, "Opción inválida.");
+            }
+        } while (opcion != 4);
+    }
+
+    public static Libro buscarLibro(String isbn) {
+        for (int i = 0; i < contador; i++) {
+            if (libros[i].getIsbn().equals(isbn)) {
+                return libros[i];
+            }
+        }
+        return null;
+    }
+
+    public static Libro buscarLibroPorTitulo(String titulo) {
+        for (int i = 0; i < contador; i++) {
+            if (libros[i].getTitulo().equalsIgnoreCase(titulo)) {
+                return libros[i];
+            }
+        }
+        return null;
+    }
+
+    public static boolean eliminarLibro(String isbn) {
+        for (int i = 0; i < contador; i++) {
+            if (libros[i].getIsbn().equals(isbn)) {
+                librosEliminados[contadorEliminados++] = libros[i];
+                for (int j = i; j < contador - 1; j++) {
+                    libros[j] = libros[j + 1];
+                }
+                libros[--contador] = null;
+                return true;
+            }
+        }
+        return false;
+    }
+}
