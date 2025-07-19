@@ -8,9 +8,9 @@ import java.time.format.DateTimeFormatter;
 public class Prestamo {
 
     public static void main(String[] args) { 
-        String isbn = "9781234567890";
-        String titulo = "Java Básico";
-        String estudiante = "Juan Pérez";
+        String isbn = JOptionPane.showInputDialog(null, "Ingrese el código");
+        String titulo = JOptionPane.showInputDialog(null, "Ingrese el Titulo");
+        String estudiante = JOptionPane.showInputDialog(null, "Ingrese el nombre");
         
         LocalDateTime ahora = LocalDateTime.now();
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
